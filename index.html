@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>誊稿 · 仿手写排版</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23C96442'/%3E%3Cpath d='M7 11c3-2.5 6 2.5 9 0s6 2.5 9 0' fill='none' stroke='%23FFF6EC' stroke-width='2.6' stroke-linecap='round'/%3E%3Cpath d='M7 17.5c3-2.5 6 2.5 9 0s6 2.5 9 0' fill='none' stroke='%23FFF6EC' stroke-width='2.6' stroke-linecap='round' opacity='.85'/%3E%3Cpath d='M7 24c2.2-2 4.4 2 7 .5' fill='none' stroke='%23FFF6EC' stroke-width='2.6' stroke-linecap='round' opacity='.7'/%3E%3C/svg%3E">
+<style id="pageStyle"></style>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<aside class="side">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <rect width="32" height="32" rx="7" fill="#C96442"/>
+      <path d="M7 11c3-2.5 6 2.5 9 0s6 2.5 9 0" fill="none" stroke="#FFF6EC" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M7 17.5c3-2.5 6 2.5 9 0s6 2.5 9 0" fill="none" stroke="#FFF6EC" stroke-width="2.6" stroke-linecap="round" opacity=".85"/>
+      <path d="M7 24c2.2-2 4.4 2 7 .5" fill="none" stroke="#FFF6EC" stroke-width="2.6" stroke-linecap="round" opacity=".7"/>
+    </svg>
+    <h1>誊稿</h1>
+  </div>
+
+  <div class="side-scroll">
+
+    <section class="card">
+      <div class="ta-shell" title="">
+        <div class="ta-scroll">
+          <div class="ta-pad ta-pad-top"></div>
+          <div id="text" class="ta" contenteditable="plaintext-only" spellcheck="false" data-placeholder="把要抄写的内容粘贴到这里"></div>
+          <div class="ta-pad ta-pad-bottom"></div>
+        </div>
+      </div>
+      <div class="card-foot">
+        <div class="stepper" title="抄写遍数，双击数字恢复默认 1">
+          <button id="copiesMinus" type="button" aria-label="减少一遍">−</button>
+          <input id="copies" type="number" min="1" max="99" step="1" value="1">
+          <button id="copiesPlus" type="button" aria-label="增加一遍">＋</button>
+        </div>
+        <span class="foot-label">遍</span>
+        <button id="chipSample" class="quiet" type="button">示例</button>
+        <button id="btnReshuffle" class="quiet" type="button">
+          <svg viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1-1 6M4 10V4m0 6h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          重新随机
+        </button>
+      </div>
+    </section>
+
+    <section class="group">
+      <div class="ghead">
+        <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>字体</span>
+      </div>
+      <p class="sublabel">文字</p>
+      <div id="ddFont"></div>
+      <p class="sublabel">符号</p>
+      <div id="ddSym"></div>
+      <p class="sublabel" id="fontStatus">未连接字体文件夹</p>
+      <button id="btnImportFont" class="navrow" type="button">
+        <svg viewBox="0 0 24 24"><path d="M12 15V4m0 0 3.5 3.5M12 4 8.5 7.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        导入字体…
+      </button>
+      <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2" hidden>
+      <button id="btnConnectDir" class="navrow" type="button">
+        <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        连接字体文件夹
+      </button>
+    </section>
+
+    <section class="group">
+      <div class="ghead">
+        <svg viewBox="0 0 24 24"><path d="M4 8h8M17 8h3M4 16h3M12 16h8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="14.5" cy="8" r="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="9.5" cy="16" r="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+        <span>版面</span>
+      </div>
+      <div class="slider-row"><label for="size">字号</label><output id="sizeOut"></output></div>
+      <input type="range" id="size" min="3.5" max="9" step="0.5" value="5">
+      <div class="slider-row"><label for="symSize">符号大小</label><output id="symSizeOut"></output></div>
+      <input type="range" id="symSize" min="0.6" max="1.4" step="0.05" value="1">
+      <div class="slider-row"><label for="gap">字距</label><output id="gapOut"></output></div>
+      <input type="range" id="gap" min="-1" max="2" step="0.05" value="0">
+      <div class="slider-row"><label for="spacing">行距</label><output id="spacingOut"></output></div>
+      <input type="range" id="spacing" min="1.3" max="2.4" step="0.05" value="1.6">
+      <p class="sublabel">字的随机</p>
+      <div class="pills" id="jitter">
+        <label><input type="radio" name="jitter" value="0"><span>轻</span></label>
+        <label><input type="radio" name="jitter" value="1" checked><span>自然</span></label>
+        <label><input type="radio" name="jitter" value="2"><span>明显</span></label>
+        <label><input type="radio" name="jitter" value="3"><span>自定义</span></label>
+      </div>
+      <div class="custom-panel" id="jitterCustom" hidden>
+        <div class="mini-row"><span>大小波动</span><input type="range" id="jcSize" min="0" max="0.2" step="0.01" value="0.08"><output id="jcSizeOut"></output></div>
+        <div class="mini-row"><span>旋转</span><input type="range" id="jcRot" min="0" max="6" step="0.1" value="2.2"><output id="jcRotOut"></output></div>
+        <div class="mini-row"><span>偏移</span><input type="range" id="jcDy" min="0" max="2" step="0.05" value="0.8"><output id="jcDyOut"></output></div>
+        <div class="mini-row"><span>墨色深浅</span><input type="range" id="jcInk" min="0" max="30" step="1" value="12"><output id="jcInkOut"></output></div>
+      </div>
+    </section>
+
+    <section class="group">
+      <div class="ghead">
+        <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 8h6M9 12h6M9 16h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>纸张</span>
+      </div>
+        <div class="pills" id="paper">
+          <label><input type="radio" name="paper" value="k16" checked><span>16K</span></label>
+          <label><input type="radio" name="paper" value="a4"><span>A4</span></label>
+          <label><input type="radio" name="paper" value="custom"><span>自定义</span></label>
+        </div>
+      <div class="custom-panel" id="paperCustom" hidden>
+        <div class="num-row">
+          <span>纸宽</span><input type="number" id="paperW" min="80" max="400" step="1" value="185"><span class="unit">mm</span>
+        </div>
+        <div class="num-row">
+          <span>纸高</span><input type="number" id="paperH" min="80" max="400" step="1" value="260"><span class="unit">mm</span>
+        </div>
+      </div>
+      <p class="sublabel">格线</p>
+      <div class="pills" id="grid">
+        <label><input type="radio" name="grid" value="none" checked><span>无格</span></label>
+        <label><input type="radio" name="grid" value="tian"><span>方格</span></label>
+        <label><input type="radio" name="grid" value="rule"><span>横线</span></label>
+      </div>
+    </section>
+
+    <section class="group">
+      <div class="ghead">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>配置</span>
+      </div>
+      <button id="btnExportSettings" class="navrow" type="button">
+        <svg viewBox="0 0 24 24"><path d="M12 15V4m0 0 3.5 3.5M12 4 8.5 7.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        导出设置
+      </button>
+      <button id="btnImportSettings" class="navrow" type="button">
+        <svg viewBox="0 0 24 24"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 20h14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        导入设置
+      </button>
+      <input type="file" id="settingsFile" accept=".json,application/json" hidden>
+    </section>
+
+  </div>
+
+  <div class="side-foot">
+    <p class="stats" id="stats"></p>
+    <p class="footnote">内容只在本机处理，不会上传。请仅用于学习、练习等正当用途。</p>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="actions">
+    <button id="btnPrint" class="pill" type="button">
+      <svg viewBox="0 0 24 24"><path d="M7 8V4h10v4M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v6H7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+      打印
+    </button>
+    <button id="btnPdf" class="pill primary" type="button">
+      <svg viewBox="0 0 24 24"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 20h14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      下载 PDF
+    </button>
+  </div>
+
+  <div class="stage">
+    <div class="pages" id="pages"></div>
+  </div>
+</main>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="overlay-box"><p id="overlayText">正在生成…</p></div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="js/vendor/jspdf.umd.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
